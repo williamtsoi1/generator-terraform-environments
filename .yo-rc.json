@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "William Tsoi",
+      "authorEmail": "william@williamtsoi.net",
+      "authorUrl": "https://about.me/williamtsoi"
+    }
+  }
+}
