@@ -10,18 +10,55 @@ npm install -g yo
 npm install -g generator-terraform-environments
 ```
 
-Then generate your new project:
+Then generate your new project, answering the prompts as required:
 
 ```bash
 yo terraform-environments
 ```
 
-## Getting To Know Yeoman
+## Usage
 
- * Yeoman has a heart of gold.
- * Yeoman is a person with feelings and opinions, but is very easy to work with.
- * Yeoman can be too opinionated at times but is easily convinced not to be.
- * Feel free to [learn more about Yeoman](http://yeoman.io/).
+After creating your scaffolding, you should have a folder structure similar to the following:
+```
+.
+├── environment
+│   ├── production
+│   │   ├── environment.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   ├── staging
+│   │   ├── environment.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   ├── test1
+│   │   ├── environment.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   └── test2
+│       ├── environment.tf
+│       ├── terraform.tfvars
+│       └── variables.tf
+├── myApp.tf
+└── variables.tf
+```
+
+To configure your infrastructure deployment:
+- Edit `myApp.tf` and add references to other modules that you need for resource creation. As a guideline you shouldn't create resources directly here unless your deployment is very small.
+- Edit `variables.tf` and include variables that are needed for the modules called by `myApp.tf`. Supply defaults here if required.
+
+To configure environment-specific variables for the test1 environment (there is a sample variable called `environment_name`):
+- Edit `environment/test1/variables.tf` and include variables that are needed for the modules called by `myApp.tf`
+- Edit `environment/test1/terraform.tfvars` and supply values here
+
+To deploy the environment into the test1 environment:
+```bash
+cd ./environment/test1
+terraform get
+terraform init
+terraform apply
+```
+
+Once the deployment is successful, you can rinse and repeat for all your other environments.
 
 ## License
 
