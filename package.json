@@ -1,6 +1,6 @@
 {
   "name": "generator-terraform-environments",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Scaffolding used to create infrastructure environments using Terraform",
   "homepage": "https://github.com/williamtsoi1/generator-terraform-environments",
   "author": {
