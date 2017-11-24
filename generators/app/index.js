@@ -17,12 +17,6 @@ module.exports = class extends Generator {
     const prompts = [
       {
         type: 'input',
-        name: 'appName',
-        message: 'What is the name of your app?',
-        default: 'myApp'
-      },
-      {
-        type: 'input',
         name: 'environments',
         message:
           'What logical environments will you be running (separate multiple responses by comma)?',
@@ -31,10 +25,18 @@ module.exports = class extends Generator {
       },
       {
         type: 'input',
+        name: 'components',
+        message:
+          'What components will you be running (separate multiple responses by comma)?',
+        default: 'core,compute,data',
+        store: true
+      },
+      {
+        type: 'input',
         name: 'backend',
         message:
           'What state backend will you be using? Full list of backends here: https://www.terraform.io/docs/backend/types/index.html',
-        default: 'local'
+        default: 's3'
       },
       {
         type: 'input',
@@ -42,6 +44,32 @@ module.exports = class extends Generator {
         message:
           'What Terraform provider will you be using? Full list of providers here: https://www.terraform.io/docs/providers',
         default: 'aws'
+      },
+      {
+        when: function(props) {
+          return props.backend === 's3';
+        },
+        type: 'input',
+        name: 'backendBucketName',
+        message: 'Name of the S3 Bucket for remote state',
+      },
+      {
+        when: function(props) {
+          return props.backend === 's3';
+        },
+        type: 'input',
+        name: 'backendBucketKeyPrefix',
+        message: 'The key prefix for the remote state files',
+        default: 'terraform-remote-state'
+      },
+      {
+        when: function(props) {
+          return props.backend === 's3';
+        },
+        type: 'input',
+        name: 'backendBucketRegion',
+        message: 'The AWS region for the S3 Bucket',
+        default: 'ap-southeast-2'
       }
     ];
 
@@ -53,36 +81,58 @@ module.exports = class extends Generator {
 
   writing() {
     var environments = this.props.environments.split(',');
-    for (let environment of environments) {
-      this.fs.copyTpl(
-        this.templatePath('app_environment.tf'),
-        this.destinationPath(`environment/${environment}/environment.tf`),
-        {
-          provider: this.props.provider,
-          appName: this.props.appName,
-          backend: this.props.backend
-        }
+    var components = this.props.components.split(',');
+    for (let component of components) {
+      // Creates environment folders
+      for (let environment of environments) {
+        this.fs.copyTpl(
+          this.templatePath('environments/components/component.tf'),
+          this.destinationPath(
+            `environments/${environment}/${component}/${component}.tf`
+          ),
+          {
+            provider: this.props.provider,
+            appName: this.props.appName,
+            backend: this.props.backend,
+            backendBucketName: this.props.backendBucketName,
+            backendBucketKeyPrefix: this.props.backendBucketKeyPrefix,
+            backendBucketRegion: this.props.backendBucketRegion,
+            environment: environment,
+            component: component,
+            components: components
+          }
+        );
+        this.fs.copyTpl(
+          this.templatePath('environments/components/terraform.tfvars'),
+          this.destinationPath(
+            `environments/${environment}/${component}/terraform.tfvars`
+          ),
+          {
+            environment: environment,
+            component: component
+          }
+        );
+        this.fs.copy(
+          this.templatePath('environments/components/input.tf'),
+          this.destinationPath(`environments/${environment}/${component}/input.tf`)
+        );
+      }
+
+      // Creates module folders
+      this.fs.copy(
+        this.templatePath('modules/input.tf'),
+        this.destinationPath(`modules/${component}/input.tf`)
       );
       this.fs.copyTpl(
-        this.templatePath('app_environment.tfvars'),
-        this.destinationPath(`environment/${environment}/terraform.tfvars`),
-        {
-          environment: environment
-        }
+        this.templatePath('modules/module.tf'),
+        this.destinationPath(`modules/${component}/${component}.tf`),
+        { component: component }
       );
       this.fs.copy(
-        this.templatePath('variables.tf'),
-        this.destinationPath(`environment/${environment}/variables.tf`)
+        this.templatePath('modules/output.tf'),
+        this.destinationPath(`modules/${component}/output.tf`)
       );
     }
-    this.fs.copyTpl(
-      this.templatePath('app.tf'),
-      this.destinationPath(`${this.props.appName}.tf`),
-      {
-        appName: this.props.appName
-      }
-    );
-    this.fs.copy(this.templatePath('variables.tf'), this.destinationPath(`variables.tf`));
   }
 
   install() {}

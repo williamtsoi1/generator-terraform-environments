@@ -21,39 +21,63 @@ yo terraform-environments
 After creating your scaffolding, you should have a folder structure similar to the following:
 ```
 .
-├── environment
+├── environments
 │   ├── production
-│   │   ├── environment.tf
-│   │   ├── terraform.tfvars
-│   │   └── variables.tf
-│   ├── staging
-│   │   ├── environment.tf
-│   │   ├── terraform.tfvars
-│   │   └── variables.tf
-│   ├── test1
-│   │   ├── environment.tf
-│   │   ├── terraform.tfvars
-│   │   └── variables.tf
-│   └── test2
-│       ├── environment.tf
-│       ├── terraform.tfvars
-│       └── variables.tf
-├── myApp.tf
-└── variables.tf
+│   │   ├── compute
+│   │   │   ├── compute.tf
+│   │   │   ├── input.tf
+│   │   │   └── terraform.tfvars
+│   │   ├── core
+│   │   │   ├── core.tf
+│   │   │   ├── input.tf
+│   │   │   └── terraform.tfvars
+│   │   └── data
+│   │       ├── data.tf
+│   │       ├── input.tf
+│   │       └── terraform.tfvars
+│   └── test
+│       ├── compute
+│       │   ├── compute.tf
+│       │   ├── input.tf
+│       │   └── terraform.tfvars
+│       ├── core
+│       │   ├── core.tf
+│       │   ├── input.tf
+│       │   └── terraform.tfvars
+│       └── data
+│           ├── data.tf
+│           ├── input.tf
+│           └── terraform.tfvars
+└── modules
+    ├── compute
+    │   ├── compute.tf
+    │   ├── input.tf
+    │   └── output.tf
+    ├── core
+    │   ├── core.tf
+    │   ├── input.tf
+    │   └── output.tf
+    └── data
+        ├── data.tf
+        ├── input.tf
+        └── output.tf
 ```
+The above example assumes that there are two environments (`production` and `test`), as well as three separate components (`core`, `compute` and `data`)
 
-To configure your infrastructure deployment:
-- Edit `myApp.tf` and add references to other modules that you need for resource creation. As a guideline you shouldn't create resources directly here unless your deployment is very small.
-- Edit `variables.tf` and include variables that are needed for the modules called by `myApp.tf`. Supply defaults here if required.
+To configure your component modules:
 
-To configure environment-specific variables for the test1 environment (there is a sample variable called `environment_name`):
-- Edit `environment/test1/variables.tf` and include variables that are needed for the modules called by `myApp.tf`
-- Edit `environment/test1/terraform.tfvars` and supply values here
+- Edit `modules/<component>/<component>.tf` and add terraform resources, or references to other modules that you need.
+- Edit `modules/<component>/input.tf` and add input parameters that the component module requires.
+- Edit `modules/<component>/output.tf` and add output parameters that are used by other component modules.
 
-To deploy the environment into the test1 environment:
+To configure your environments:
+
+- Edit `environment/<environment>/<component>/input.tf` and add input parameters required by the component module
+- Edit `environment/<environment>/<component>/terraform.tfvars` and supply values here
+
+To deploy the core component into the test environment:
 ```bash
-cd ./environment/test1
-terraform get
+cd ./environments/test/core
 terraform init
 terraform apply
 ```
