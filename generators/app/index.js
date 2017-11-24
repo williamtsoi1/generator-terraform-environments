@@ -51,7 +51,7 @@ module.exports = class extends Generator {
         },
         type: 'input',
         name: 'backendBucketName',
-        message: 'Name of the S3 Bucket for remote state',
+        message: 'Name of the S3 Bucket for remote state'
       },
       {
         when: function(props) {
