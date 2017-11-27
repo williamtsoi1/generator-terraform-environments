@@ -32,17 +32,19 @@ module.exports = class extends Generator {
         store: true
       },
       {
-        type: 'input',
+        type: 'list',
         name: 'backend',
         message:
           'What state backend will you be using? Full list of backends here: https://www.terraform.io/docs/backend/types/index.html',
+        choices: ['s3'],
         default: 's3'
       },
       {
-        type: 'input',
+        type: 'list',
         name: 'provider',
         message:
           'What Terraform provider will you be using? Full list of providers here: https://www.terraform.io/docs/providers',
+        choices: ['aws'],
         default: 'aws'
       },
       {
@@ -51,7 +53,10 @@ module.exports = class extends Generator {
         },
         type: 'input',
         name: 'backendBucketName',
-        message: 'Name of the S3 Bucket for remote state'
+        message: 'Name of the S3 Bucket for remote state',
+        validate: function(input) {
+          return input.length > 0;
+        }
       },
       {
         when: function(props) {
