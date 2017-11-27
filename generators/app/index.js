@@ -48,29 +48,21 @@ module.exports = class extends Generator {
         default: 'aws'
       },
       {
-        when: function(props) {
-          return props.backend === 's3';
-        },
+        when: props => props.backend === 's3',
         type: 'input',
         name: 'backendBucketName',
         message: 'Name of the S3 Bucket for remote state',
-        validate: function(input) {
-          return input.length > 0;
-        }
+        validate: input => input.length > 0
       },
       {
-        when: function(props) {
-          return props.backend === 's3';
-        },
+        when: props => props.backend === 's3',
         type: 'input',
         name: 'backendBucketKeyPrefix',
         message: 'The key prefix for the remote state files',
         default: 'terraform-remote-state'
       },
       {
-        when: function(props) {
-          return props.backend === 's3';
-        },
+        when: props => props.backend === 's3',
         type: 'input',
         name: 'backendBucketRegion',
         message: 'The AWS region for the S3 Bucket',
