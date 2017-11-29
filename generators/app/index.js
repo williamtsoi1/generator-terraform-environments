@@ -114,6 +114,10 @@ module.exports = class extends Generator {
           this.templatePath('environments/components/input.tf'),
           this.destinationPath(`environments/${environment}/${component}/input.tf`)
         );
+        this.fs.copy(
+          this.templatePath('environments/components/output.tf'),
+          this.destinationPath(`environments/${environment}/${component}/output.tf`)
+        );
       }
 
       // Creates module folders

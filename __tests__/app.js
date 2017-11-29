@@ -36,7 +36,8 @@ describe('generator-terraform-environments:app', () => {
     assert.file([
       'environments/1/a/a.tf',
       'environments/1/a/terraform.tfvars',
-      'environments/1/a/input.tf'
+      'environments/1/a/input.tf',
+      'environments/1/a/output.tf'
     ]);
   });
 
