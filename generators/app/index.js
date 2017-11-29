@@ -2,6 +2,7 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
+const providers = require('./templates/providers.json');
 
 module.exports = class extends Generator {
   prompting() {
@@ -44,8 +45,7 @@ module.exports = class extends Generator {
         name: 'provider',
         message:
           'What Terraform provider will you be using? Full list of providers here: https://www.terraform.io/docs/providers',
-        choices: ['aws'],
-        default: 'aws'
+        choices: Object.keys(providers)
       },
       {
         when: props => props.backend === 's3',
@@ -89,6 +89,7 @@ module.exports = class extends Generator {
           ),
           {
             provider: this.props.provider,
+            providerAttributes: providers[this.props.provider],
             appName: this.props.appName,
             backend: this.props.backend,
             backendBucketName: this.props.backendBucketName,

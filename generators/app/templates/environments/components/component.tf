@@ -1,7 +1,8 @@
 # Complete your provider information here
 # Full list of providers: https://www.terraform.io/docs/providers/index.html
 provider "<%= provider %>" {
-    # provider parameters here
+    # provider parameters here. Override any secrets at run time and avoid storing them in source control<% for (i in providerAttributes) { %>
+    <%= providerAttributes[i] %> = ""<% } %>
 }
 
 # Make a single call to the component module in the modules folder of this repo.

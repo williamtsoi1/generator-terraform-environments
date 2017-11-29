@@ -1,0 +1,5 @@
+{
+    "aws": ["access_key", "secret_key", "region"],
+    "azurerm": ["subscription_id", "client_id", "client_secret", "tenant_id"],
+    "google": ["project", "region"]
+}
