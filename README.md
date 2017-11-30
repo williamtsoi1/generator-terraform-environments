@@ -26,27 +26,33 @@ After creating your scaffolding, you should have a folder structure similar to t
 │   │   ├── compute
 │   │   │   ├── compute.tf
 │   │   │   ├── input.tf
+│   │   │   ├── output.tf
 │   │   │   └── terraform.tfvars
 │   │   ├── core
 │   │   │   ├── core.tf
 │   │   │   ├── input.tf
+│   │   │   ├── output.tf
 │   │   │   └── terraform.tfvars
 │   │   └── data
 │   │       ├── data.tf
 │   │       ├── input.tf
+│   │       ├── output.tf
 │   │       └── terraform.tfvars
 │   └── test
 │       ├── compute
 │       │   ├── compute.tf
 │       │   ├── input.tf
+│       │   ├── output.tf
 │       │   └── terraform.tfvars
 │       ├── core
 │       │   ├── core.tf
 │       │   ├── input.tf
+│       │   ├── output.tf
 │       │   └── terraform.tfvars
 │       └── data
 │           ├── data.tf
 │           ├── input.tf
+│           ├── output.tf
 │           └── terraform.tfvars
 └── modules
     ├── compute
@@ -74,6 +80,7 @@ To configure your environments:
 
 - Edit `environment/<environment>/<component>/input.tf` and add input parameters required by the component module
 - Edit `environment/<environment>/<component>/terraform.tfvars` and supply values here
+- Edit `environment/<environment>/<component>/output.tf` and add output parameters that are used by other component modules.
 
 To deploy the core component into the test environment:
 ```bash
