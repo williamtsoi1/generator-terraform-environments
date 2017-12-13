@@ -3,6 +3,7 @@ const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const providers = require('./templates/providers.json');
+const backends = require('./templates/backends.json');
 
 module.exports = class extends Generator {
   prompting() {
@@ -37,8 +38,7 @@ module.exports = class extends Generator {
         name: 'backend',
         message:
           'What state backend will you be using? Full list of backends here: https://www.terraform.io/docs/backend/types/index.html',
-        choices: ['s3'],
-        default: 's3'
+        choices: Object.keys(backends)
       },
       {
         type: 'list',
@@ -67,6 +67,20 @@ module.exports = class extends Generator {
         name: 'backendBucketRegion',
         message: 'The AWS region for the S3 Bucket',
         default: 'ap-southeast-2'
+      },
+      {
+        when: props => props.backend === 'consul',
+        type: 'input',
+        name: 'backendConsulAddress',
+        message: 'The address of the Consul agent',
+        validate: input => input.length > 0
+      },
+      {
+        when: props => props.backend === 'consul',
+        type: 'input',
+        name: 'backendConsulPathPrefix',
+        message: 'The path prefix for the remote state',
+        default: 'terraform-remote-state'
       }
     ];
 
