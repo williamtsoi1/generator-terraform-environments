@@ -76,7 +76,7 @@ module.exports = class extends Generator {
     });
   }
 
-  writing() {
+  writingEnvironments() {
     var environments = this.props.environments.split(',');
     var components = this.props.components.split(',');
     for (let component of components) {
@@ -119,7 +119,12 @@ module.exports = class extends Generator {
           this.destinationPath(`environments/${environment}/${component}/output.tf`)
         );
       }
+    }
+  }
 
+  writingModules() {
+    var components = this.props.components.split(',');
+    for (let component of components) {
       // Creates module folders
       this.fs.copy(
         this.templatePath('modules/input.tf'),
