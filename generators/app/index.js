@@ -109,6 +109,8 @@ module.exports = class extends Generator {
             backendBucketName: this.props.backendBucketName,
             backendBucketKeyPrefix: this.props.backendBucketKeyPrefix,
             backendBucketRegion: this.props.backendBucketRegion,
+            backendConsulAddress: this.props.backendConsulAddress,
+            backendConsulPathPrefix: this.props.backendConsulPathPrefix,
             environment: environment,
             component: component,
             components: components
