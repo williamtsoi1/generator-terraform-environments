@@ -1,4 +1,5 @@
 # generator-terraform-environments [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+
 > Scaffolding used to create infrastructure environments using Terraform
 
 ## Installation
@@ -19,6 +20,7 @@ yo terraform-environments
 ## Usage
 
 After creating your scaffolding, you should have a folder structure similar to the following:
+
 ```
 .
 ├── environments
@@ -68,6 +70,7 @@ After creating your scaffolding, you should have a folder structure similar to t
         ├── input.tf
         └── output.tf
 ```
+
 The above example assumes that there are two environments (`production` and `test`), as well as three separate components (`core`, `compute` and `data`)
 
 To configure your component modules:
@@ -83,6 +86,7 @@ To configure your environments:
 - Edit `environment/<environment>/<component>/output.tf` and add output parameters that are used by other component modules.
 
 To deploy the core component into the test environment:
+
 ```bash
 cd ./environments/test/core
 terraform init
@@ -91,10 +95,32 @@ terraform apply
 
 Once the deployment is successful, you can rinse and repeat for all your other environments.
 
+## Remote State Backends
+
+Currently this code generator supports the following remote state backends:
+
+- s3
+- consul
+
+### s3
+
+For the s3 backend, you will be asked for the bucket name, a key prefix, as well as the AWS region for the bucket. The key prefix is especially useful if you have to share this bucket with other apps so the state files can be segregated off.
+
+As a pattern, the state files will be stored in ```s3://<bucket_name>/<key_prefix>/<environment>/<component>/terraform.tfstate```
+
+Note: This code generator will not actually create the s3 bucket for you, and you will also need to provision permissions for the s3 bucket (via bucket policies and IAM users/roles) yourself.
+
+### Consul
+
+For the consul backend, you will be asked for the consul address (defaults to localhost:8500), as well as the key prefix. The key prefix is especially useful if you have to share the Consul key-value store with other apps so the state files can be segregated off.
+
+As a pattern, the state will be stored in key ```<key_prefix>/<environment>/<component>```
+
+Note: This code generator will not manage permissions such as authentication keys, nor ACLs. You will need to manage and provision the appropriate ACLs yourself.
+
 ## License
 
 MIT © [William Tsoi](https://about.me/williamtsoi)
-
 
 [npm-image]: https://badge.fury.io/js/generator-terraform-environments.svg
 [npm-url]: https://npmjs.org/package/generator-terraform-environments

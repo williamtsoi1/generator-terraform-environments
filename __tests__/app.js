@@ -1,22 +1,13 @@
 'use strict';
-const path = require('path');
 const assert = require('yeoman-assert');
-const helpers = require('yeoman-test');
+const backendsTestData = require('../helpers/backendsTestData');
 
 describe('generator-terraform-environments:app', () => {
-  beforeAll(() => {
-    return helpers.run(path.join(__dirname, '../generators/app')).withPrompts({
-      environments: '1,2,3',
-      components: 'a,b,c',
-      backend: 's3',
-      provider: 'aws',
-      backendBucketName: 'myBucket',
-      backendBucketKeyPrefix: 'terraform-remote-state',
-      backendBucketRegion: 'ap-southeast-2'
+  describe('basic folder tests', () => {
+    beforeAll(() => {
+      return backendsTestData.s3BackendTestData();
     });
-  });
 
-  describe('environments folder', () => {
     it('creates per-environment folders', () => {
       assert.file(['environments']);
       assert.file(['environments/1']);
@@ -42,43 +33,8 @@ describe('generator-terraform-environments:app', () => {
       ]);
     });
 
-    describe('s3 backend tests', () => {
-      it('creates the correct s3 backend structure', () => {
-        assert.fileContent([
-          ['environments/1/a/a.tf', 'terraform {'],
-          ['environments/1/a/a.tf', 'backend "s3"'],
-          ['environments/1/a/a.tf', 'bucket = "myBucket"'],
-          [
-            'environments/1/a/a.tf',
-            'key    = "terraform-remote-state/1/a/terraform.tfstate"'
-          ],
-          ['environments/1/a/a.tf', 'region = "ap-southeast-2"']
-        ]);
-      });
-
-      it('creates the correct references to other state files', () => {
-        assert.fileContent([
-          ['environments/1/a/a.tf', 'data "terraform_remote_state" "b"'],
-          ['environments/1/a/a.tf', 'data "terraform_remote_state" "c"']
-        ]);
-      });
-
-      it('does not create a reference to itself', () => {
-        assert.noFileContent([
-          ['environments/1/a/a.tf', 'data "terraform_remote_state" "a"'],
-          ['environments/1/b/b.tf', 'data "terraform_remote_state" "b"'],
-          ['environments/1/c/c.tf', 'data "terraform_remote_state" "c"']
-        ]);
-      });
-    });
-  });
-
-  describe('modules folder', () => {
-    it('creates per-module folders', () => {
+    it('creates per-module folders and files', () => {
       assert.file(['modules/a', 'modules/b', 'modules/c']);
-    });
-
-    it('creates correct files in a module', () => {
       assert.file([
         'modules/a/a.tf',
         'modules/a/input.tf',
@@ -89,6 +45,55 @@ describe('generator-terraform-environments:app', () => {
         'modules/c/c.tf',
         'modules/c/input.tf',
         'modules/c/output.tf'
+      ]);
+    });
+  });
+
+  describe('s3 remote backend', () => {
+    beforeAll(() => {
+      return backendsTestData.s3BackendTestData();
+    });
+
+    it('creates the correct s3 backend structure', () => {
+      assert.fileContent([
+        ['environments/1/a/a.tf', 'terraform {'],
+        ['environments/1/a/a.tf', 'backend "s3"'],
+        ['environments/1/a/a.tf', 'bucket = "myBucket"'],
+        [
+          'environments/1/a/a.tf',
+          'key    = "terraform-remote-state/1/a/terraform.tfstate"'
+        ],
+        ['environments/1/a/a.tf', 'region = "ap-southeast-2"']
+      ]);
+    });
+
+    it('creates the correct references to other state files', () => {
+      assert.fileContent([
+        ['environments/1/a/a.tf', 'data "terraform_remote_state" "b"'],
+        ['environments/1/a/a.tf', 'data "terraform_remote_state" "c"']
+      ]);
+    });
+
+    it('does not create a reference to itself', () => {
+      assert.noFileContent([
+        ['environments/1/a/a.tf', 'data "terraform_remote_state" "a"'],
+        ['environments/1/b/b.tf', 'data "terraform_remote_state" "b"'],
+        ['environments/1/c/c.tf', 'data "terraform_remote_state" "c"']
+      ]);
+    });
+  });
+
+  describe('consul remote backend', () => {
+    beforeAll(() => {
+      return backendsTestData.consulBackendTestData();
+    });
+
+    it('creates the correct consul backend structure', () => {
+      assert.fileContent([
+        ['environments/1/a/a.tf', 'terraform {'],
+        ['environments/1/a/a.tf', 'backend "consul"'],
+        ['environments/1/a/a.tf', 'address      = "consul"'],
+        ['environments/1/a/a.tf', 'path         = "terraform-remote-state/1/a"']
       ]);
     });
   });

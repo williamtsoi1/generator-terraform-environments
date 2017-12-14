@@ -33,3 +33,23 @@ data "terraform_remote_state" "<%= components[i] %>" {
     }
 }
 <% } %><% } %><% } %>
+
+<% if (backend == "consul") { %>
+# The "access_token" parameter is left here for completeness, but should be set as the CONSUL_HTTP_TOKEN environment variable
+terraform {
+    backend "<%= backend %>" {
+        address      = "<%= backendConsulAddress %>"
+        path         = "<%= backendConsulPathPrefix %>/<%= environment %>/<%= component %>"
+        access_token = ""
+    }
+}
+<% for (i in components) { %><% if (components[i] != component) { %>
+data "terraform_remote_state" "<%= components[i] %>" {
+    backend = "<%= backend %>"
+    config {
+        address      = "<%= backendConsulAddress %>"
+        path         = "<%= backendConsulPathPrefix %>/<%= environment %>/<%= components[i] %>"
+        access_token = ""
+    }
+}
+<% } %><% } %><% } %>

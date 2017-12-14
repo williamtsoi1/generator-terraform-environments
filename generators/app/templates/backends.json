@@ -1,0 +1,4 @@
+{
+    "s3": ["bucket", "key", "region"],
+    "consul": ["address", "path", "access_token"]
+}
