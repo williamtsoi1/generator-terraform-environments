@@ -73,6 +73,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'backendConsulAddress',
         message: 'The address of the Consul agent',
+        default: 'localhost:8500',
         validate: input => input.length > 0
       },
       {
