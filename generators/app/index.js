@@ -135,6 +135,7 @@ module.exports = class extends Generator {
           this.templatePath('environments/components/output.tf'),
           this.destinationPath(`environments/${environment}/${component}/output.tf`)
         );
+        this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
       }
     }
   }
