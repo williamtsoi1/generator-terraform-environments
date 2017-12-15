@@ -82,6 +82,22 @@ module.exports = class extends Generator {
         name: 'backendConsulPathPrefix',
         message: 'The path prefix for the remote state',
         default: 'terraform-remote-state'
+      },
+      {
+        when: props => props.backend === 'atlas',
+        type: 'input',
+        name: 'backendAtlasOrganisationName',
+        message: 'The name of your Terraform Enterprise Organisation',
+        default: 'myOrg',
+        validate: input => input.length > 0
+      },
+      {
+        when: props => props.backend === 'atlas',
+        type: 'input',
+        name: 'backendAtlasWorkspacePrefix',
+        message: 'Prefix for your Terraform Enterprise Workspaces',
+        default: 'myApp',
+        validate: input => input.length > 0
       }
     ];
 
@@ -112,6 +128,8 @@ module.exports = class extends Generator {
             backendBucketRegion: this.props.backendBucketRegion,
             backendConsulAddress: this.props.backendConsulAddress,
             backendConsulPathPrefix: this.props.backendConsulPathPrefix,
+            backendAtlasOrganisationName: this.props.backendAtlasOrganisationName,
+            backendAtlasWorkspacePrefix: this.props.backendAtlasWorkspacePrefix,
             environment: environment,
             component: component,
             components: components

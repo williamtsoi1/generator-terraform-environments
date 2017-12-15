@@ -97,4 +97,18 @@ describe('generator-terraform-environments:app', () => {
       ]);
     });
   });
+
+  describe('atlas remote backend', () => {
+    beforeAll(() => {
+      return backendsTestData.atlasBackendTestData();
+    });
+
+    it('creates the correct atlas backend structure', () => {
+      assert.fileContent([
+        ['environments/1/a/a.tf', 'terraform {'],
+        ['environments/1/a/a.tf', 'backend "atlas"'],
+        ['environments/1/a/a.tf', 'name         = "myOrg/myApp-1-a"']
+      ]);
+    });
+  });
 });
