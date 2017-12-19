@@ -53,3 +53,22 @@ data "terraform_remote_state" "<%= components[i] %>" {
     }
 }
 <% } %><% } %><% } %>
+
+<% if (backend == "atlas") { %>
+atlas {
+  name = "<%=backendAtlasOrganisationName %>/<%= backendAtlasWorkspacePrefix %>-<%= environment %>-<%= component %>"
+}
+
+terraform {
+    backend "<%= backend %>" {
+        name         = "<%=backendAtlasOrganisationName %>/<%= backendAtlasWorkspacePrefix %>-<%= environment %>-<%= component %>"
+    }
+}
+<% for (i in components) { %><% if (components[i] != component) { %>
+data "terraform_remote_state" "<%= components[i] %>" {
+    backend = "<%= backend %>"
+    config {
+        name         = "<%=backendAtlasOrganisationName %>/<%= backendAtlasWorkspacePrefix %>-<%= environment %>-<%= components[i] %>"
+    }
+}
+<% } %><% } %><% } %>

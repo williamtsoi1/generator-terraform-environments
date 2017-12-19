@@ -25,3 +25,14 @@ exports.consulBackendTestData = () => {
     backendConsulPathPrefix: 'terraform-remote-state'
   });
 };
+
+exports.atlasBackendTestData = () => {
+  return helpers.run(path.join(__dirname, '../generators/app')).withPrompts({
+    environments: '1,2,3',
+    components: 'a,b,c',
+    backend: 'atlas',
+    provider: 'aws',
+    backendAtlasOrganisationName: 'myOrg',
+    backendAtlasWorkspacePrefix: 'myApp'
+  });
+};
