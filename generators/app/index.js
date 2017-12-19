@@ -99,6 +99,8 @@ module.exports = class extends Generator {
         default: 'myApp',
         validate: input => input.length > 0
       }
+      // Get VCS repo name
+      // get oAuth token from TFE
     ];
 
     return this.prompt(prompts).then(props => {
@@ -154,6 +156,58 @@ module.exports = class extends Generator {
           this.destinationPath(`environments/${environment}/${component}/output.tf`)
         );
         this.fs.copy(this.templatePath('gitignore'), this.destinationPath('.gitignore'));
+
+        // Terraform Enterprise only scripts
+        if (this.props.backend === 'atlas') {
+          this.fs.copyTpl(
+            this.templatePath('terraform-enterprise/provision-workspace.sh'),
+            this.destinationPath(
+              `environments/${environment}/${component}/terraform-enterprise/provision-workspace.sh`
+            ),
+            {
+              backendAtlasOrganisationName: this.props.backendAtlasOrganisationName
+            }
+          );
+          this.fs.copyTpl(
+            this.templatePath('terraform-enterprise/workspace-payload.json'),
+            this.destinationPath(
+              `environments/${environment}/${component}/terraform-enterprise/workspace-payload.json`
+            ),
+            {
+              atlasWorkspaceName: `${this.props.backendAtlasWorkspacePrefix}-${
+                environment
+              }-${component}`,
+              vcsRepoName: this.props.vcsRepoName,
+              oAuthToken: this.props.oAuthToken
+            }
+          );
+          this.fs.copyTpl(
+            this.templatePath('terraform-enterprise/variable-component-payload.json'),
+            this.destinationPath(
+              `environments/${environment}/${component}/terraform-enterprise/variable-component-payload.json`
+            ),
+            {
+              atlasWorkspaceName: `${this.props.backendAtlasWorkspacePrefix}-${
+                environment
+              }-${component}`,
+              component: component,
+              backendAtlasOrganisationName: this.props.backendAtlasOrganisationName
+            }
+          );
+          this.fs.copyTpl(
+            this.templatePath('terraform-enterprise/variable-environment-payload.json'),
+            this.destinationPath(
+              `environments/${environment}/${component}/terraform-enterprise/variable-environment-payload.json`
+            ),
+            {
+              atlasWorkspaceName: `${this.props.backendAtlasWorkspacePrefix}-${
+                environment
+              }-${component}`,
+              environment: environment,
+              backendAtlasOrganisationName: this.props.backendAtlasOrganisationName
+            }
+          );
+        }
       }
     }
   }

@@ -1,0 +1,16 @@
+{
+    "data": {
+      "attributes": {
+        "name": "<%= atlasWorkspaceName %>",
+        "working-directory":"environments/<%= environment %>/<%= component %>",
+        "linkable-repo-id":"<%= vcsRepoName %>",
+        "oauth-token-id": "<%= oAuthToken %>",
+        "ingress-trigger-attributes": {
+          "branch":"",
+          "vcs-root-path":"",
+          "default-branch":true
+        }
+      },
+      "type":"compound-workspaces"
+    }
+}

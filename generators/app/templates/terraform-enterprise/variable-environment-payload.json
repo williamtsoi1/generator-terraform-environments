@@ -1,0 +1,21 @@
+{
+    "data": {
+        "type":"vars",
+        "attributes": 
+        {
+            "key":"environment_name",
+            "value":"<%= environment %>",
+            "category":"terraform",
+            "hcl":false,
+            "sensitive":false
+        }
+    },
+    "filter": {
+        "organization": {
+            "username":"<%= backendAtlasOrganisationName %>"
+        },
+        "workspace": {
+            "name":"<%= atlasWorkspaceName %>"
+        }
+    }
+}
