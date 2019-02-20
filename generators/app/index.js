@@ -177,6 +177,8 @@ module.exports = class extends Generator {
               atlasWorkspaceName: `${this.props.backendAtlasWorkspacePrefix}-${
                 environment
               }-${component}`,
+              component: component,
+              environment: environment,
               vcsRepoName: this.props.vcsRepoName,
               oAuthToken: this.props.oAuthToken
             }
